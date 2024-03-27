@@ -29,7 +29,7 @@ body {
     display: flex;
     height: 100vh;
     justify-content: center;
-    margin: 100px;
+    /*margin: 100px;*/
     overflow-x: hidden;
     overflow-y: auto;
     padding: 0px;
@@ -46,15 +46,16 @@ body {
 }
 
 #cards {
-    opacity: 90%;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    max-width: 916px;
-    width: calc(100% - 20px);
-    margin-top: 20px;
-    margin-bottom: 20px;
+    opacity: 75%;
+    display: grid;
+    gap: 10px;
+    /*max-width: 916px;*/
+    /*width: calc(100% - 20px);*/
+    /*margin-top: 0px;*/
+    /*margin-bottom: 20px;*/
+    grid-template-columns: 1fr 1fr 1fr 1fr;
 }
+
 
 #cards:hover>.card::after {
     opacity: 1;
