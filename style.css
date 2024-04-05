@@ -4,7 +4,11 @@
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap');
-
+.img{
+    max-width: 100%;
+    height: auto;
+    width: auto;
+}
 .text {
     font-family: "Silkscreen", sans-serif;
     color: azure;
@@ -52,10 +56,6 @@ body {
     opacity: 75%;
     display: grid;
     gap: 10px;
-    /*max-width: 916px;*/
-    /*width: calc(100% - 20px);*/
-    /*margin-top: 0px;*/
-    /*margin-bottom: 20px;*/
     grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 
@@ -186,54 +186,44 @@ i {
 @media(max-width: 1000px) {
     body {
         align-items: flex-start;
-        overflow: auto;
+        overflow-y: auto;
+        overflow-x: hidden;
+        margin: 50px;
+        justify-content: unset;
     }
 
     #cards {
         max-width: 1000px;
         padding: 10px 0px;
+        height: 100px;
+        width: 150px;
     }
 
-    .card {
-        flex-shrink: 1;
-        width: calc(50% - 4px);
+    .text {
+        font-family: "Silkscreen", sans-serif;
+        color: azure;
+        text-align: center;
+        position: fixed;
+        top: 5px; /* Adjust as needed */
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 999; /* Ensure it's above other content */
     }
 }
 
 @media(max-width: 500px) {
-    .card {
-        height: 180px;
+    #cards {
+        grid-template-columns: auto;
     }
-
-    .card-image {
-        height: 80px;
-    }
-
-    .card-image>i {
-        font-size: 3em;
-    }
-
-    .card-info-wrapper {
-        padding: 0px 10px;
-    }
-
-    .card-info>i {
-        font-size: 0.8em;
-    }
-
-    .card-info-title>h3 {
-        font-size: 0.9em;
-    }
-
-    .card-info-title>h4 {
-        font-size: 0.8em;
-        margin-top: 4px;
+    #img{
+        height: 10px;
+        width: 10px;
     }
 }
 
 @media(max-width: 320px) {
-    .card {
-        width: 100%;
+    #cards {
+        grid-template-columns: auto;
     }
 }
 
