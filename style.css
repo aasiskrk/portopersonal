@@ -195,6 +195,7 @@ i {
     }
 
     #cards {
+        opacity: 50%;
         max-width: 1000px;
         padding: 10px 0px;
         height: 100px;
@@ -204,13 +205,17 @@ i {
     .text {
         font-size: 15px;
         font-family: "Silkscreen", sans-serif;
-        color: azure;
+        color: white;
         text-align: center;
         position: fixed;
         top: 5px; /* Adjust as needed */
         left: 50%;
         transform: translateX(-50%);
         z-index: 999; /* Ensure it's above other content */
+    }
+    body {
+        background-blend-mode:saturation;
+
     }
 }
 
