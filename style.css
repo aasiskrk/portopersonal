@@ -200,6 +200,7 @@ i {
     }
 
     .text {
+        font-size: 15px;
         font-family: "Silkscreen", sans-serif;
         color: azure;
         text-align: center;
