@@ -1,9 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap');
+
 :root {
     --bg-color: rgb(20, 18, 24);
     --card-color: rgb(23, 23, 23);
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap');
+
 .img{
     max-width: 100%;
     height: auto;
