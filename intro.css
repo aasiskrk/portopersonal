@@ -3,6 +3,19 @@
     --card-color: rgb(23, 23, 23);
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap');
+
+.text {
+    font-family: "Silkscreen", sans-serif;
+    color: azure;
+    text-align: center;
+    position: fixed;
+    top: 20px; /* Adjust as needed */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999; /* Ensure it's above other content */
+}
+
 .text {
     color: azure;
     text-align: center;
