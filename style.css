@@ -57,7 +57,7 @@ body {
 #cards {
     opacity: 75%;
     display: grid;
-    gap: 10px;
+    gap: 20px;
     grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 
@@ -75,6 +75,12 @@ body {
     flex-direction: column;
     position: relative;
     width: 300px;
+    transition: transform 0.3s; /* Add transition for smooth animation */
+
+}
+
+.card:hover {
+    transform: scale(1.05); /* Enlarge the card on hover */
 }
 
 .card:hover::before {

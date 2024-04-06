@@ -68,6 +68,10 @@ body {
     /*max-width:  900px;*/
     width: 900px;
     margin: 0 auto;
+    transition: transform 0.3s; /* Add transition for smooth animation */
+}
+.card:hover {
+    transform: scale(1.05); /* Enlarge the card on hover */
 }
 
 .card:hover::before {
