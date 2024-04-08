@@ -60,7 +60,7 @@ body {
     gap: 10px;
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
-    cursor: pointer;
+    cursor: help;
     display: flex;
     height: 450px;
     flex-direction: column;
@@ -184,7 +184,7 @@ i {
 }
 /* -- ↓ ↓ ↓ some responsiveness ↓ ↓ ↓ -- */
 
-@media (max-width: 768px) {
+@media (max-width: 1000px) {
     .card-info-title {
         top: 10px;
         left: 10px;
@@ -196,6 +196,19 @@ i {
 
     .card-info-title > h4 {
         font-size: 0.9em;
+    }
+    .card {
+        display: flex;
+        height: 700px;
+        flex-direction: column;
+        position: relative;
+        /*max-width:  900px;*/
+        width: 360px;
+        margin: 0 auto;
+        transition: transform 0.3s; /* Add transition for smooth animation */
+    }
+    .text {
+    font-size: 12px;
     }
 }
 
