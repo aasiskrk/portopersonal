@@ -59,7 +59,7 @@ body {
     gap: 10px;
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
-    cursor: alias;
+    cursor: url('images/kkkl.png'), auto;
     display: flex;
     height: 450px;
     flex-direction: column;
