@@ -55,7 +55,7 @@ body {
     border-radius: 10px;
     display: flex;
     flex-direction: column;
-    height: 496px;
+    height: 504px;
     width: 900px;
     margin: 0 auto;
     transition: transform 0.3s;
