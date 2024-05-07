@@ -48,12 +48,13 @@ body {
     left: 50%;
 }
 
-
-
 #cards:hover>.card::after {
     opacity: 1;
 }
 
+.card-info{
+    text-align: center;
+}
 .card {
     opacity: 75%;
     gap: 10px;
@@ -111,12 +112,10 @@ body {
     flex-direction: column;
     flex-grow: 1;
     inset: 1px;
-    padding: 10px;
+    padding: 15px;
     position: absolute;
     z-index: 2;
 }
-
-/* -- ↓ ↓ ↓ extra card content styles ↓ ↓ ↓ -- */
 
 h1,
 h2,
@@ -133,54 +132,49 @@ i {
     color: rgb(240, 240, 240);
 }
 
-.card-image {
-    align-items: center;
+.languages {
+    margin-top: 80px;
+    text-align: center;
+    margin-bottom: 2rem;
     display: flex;
-    height: 140px;
+    flex-direction: column;
+}
+
+.languages-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.languages-list {
+
+    display: flex;
+    flex-wrap: wrap;
     justify-content: center;
-    overflow: hidden;
+    gap: 2rem;
 }
 
-.card-image>i {
-    font-size: 6em;
-    opacity: 0.25;
-}
+.language {
 
-.card-info-wrapper {
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    display: flex;
-    flex-grow: 1;
-    justify-content: flex-start;
-    padding: 0px 20px;
+    text-align: center;
 }
 
-.card-info {
-    align-items: flex-start;
-    display: flex;
-    gap: 10px;
+.language-logo {
+    filter: brightness(1.2);
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
 }
 
-.card-info>i {
-    font-size: 1em;
-    height: 20px;
-    line-height: 20px;
+.language-name {
+    font-family: "Silkscreen", sans-serif;
+
+    margin-top: 0.5rem;
+    font-weight: bold;
 }
 
-.card-info-title {
-    position: absolute;
-    top: 20px; /* Adjust as needed */
-    left: 20px; /* Adjust as needed */
-}
-
-.card-info-title > h3 {
-    margin: 0;
-    font-size: 1.3em; /* Adjust as needed */
-}
-
-.card-info-title > h4 {
-    margin: 5px 0 0; /* Adjust as needed */
-    font-size: 1em; /* Adjust as needed */
-}
 /* -- ↓ ↓ ↓ some responsiveness ↓ ↓ ↓ -- */
 
 @media (max-width: 1000px) {
@@ -225,5 +219,3 @@ i {
         font-size: 0.8em;
     }
 }
-
-

@@ -1,48 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title> Introduction </title>
+  <title>Introduction</title>
   <link rel="stylesheet" type="text/css" href="projects.css" />
-  <script src="js.js"></script>
   <link rel="shortcut icon" type="image/x-icon" href="images/kkkl.png" />
-  <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> -->
-
 </head>
-
-
 <body>
-
 <div class="text">~_~ &nbsp;&nbsp;AASHISTA KARKI</div>
 <div><img id="black-cat" src="images/projects.png"></div>
 
-
-<div class="container">
-  <div class="row" id="cards">
-
-    <div class="card">
-      <div class="card-content">
-        <div class="card-image">
-          <i class="fa-duotone fa-apartment"></i>
-        </div>
-        <div class="card-info-wrapper">
-          <div class="card-info">
-            <i class="fa-duotone fa-apartment"></i>
-            <div class="card-info-title">
-              <h3>Projects</h3>
-              <h4>Hello</h4>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+<div class="container" id="projects-container">
+  <!-- Projects will be dynamically added here -->
 </div>
 
+<script>
+  // Function to fetch repository commit count
+  async function fetchCommitCount(repoName) {
+    const query = `
+      query {
+        repository(owner: "aasiskrk", name: "${repoName}") {
+          ref(qualifiedName: "master") {
+            target {
+              ... on Commit {
+                history {
+                  totalCount
+                }
+              }
+            }
+          }
+        }
+      }
+    `;
+    const response = await fetch('https://api.github.com/graphql', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer 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',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ query }),
+    });
+    const data = await response.json();
+    return data.data.repository.ref.target.history.totalCount;
+  }
 
+  // Fetch GitHub repositories using GitHub API
+  fetch('https://api.github.com/users/aasiskrk/repos')
+          .then(response => response.json())
+          .then(async repos => {
+            // Fetch commit counts for each repository
+            const reposWithCommits = await Promise.all(repos.map(async repo => {
+              const commitCount = await fetchCommitCount(repo.name);
+              return { ...repo, commitCount };
+            }));
+
+            // Sort repos by commit count (descending)
+            reposWithCommits.sort((a, b) => b.commitCount - a.commitCount);
+
+            const projectsContainer = document.getElementById('projects-container');
+
+            reposWithCommits.forEach(repo => {
+              const card = document.createElement('div');
+              card.classList.add('card');
+              card.addEventListener('click', () => {
+                window.location.href = repo.html_url;
+              });
+
+              const cardContent = document.createElement('div');
+              cardContent.classList.add('card-content');
+
+              const cardInfoWrapper = document.createElement('div');
+              cardInfoWrapper.classList.add('card-info-wrapper');
+
+              const cardInfo = document.createElement('div');
+              cardInfo.classList.add('card-info');
+
+              const cardInfoTitle = document.createElement('div');
+              cardInfoTitle.classList.add('card-info-title');
+
+              const title = document.createElement('h3');
+              title.textContent = repo.name;
+
+              const description = document.createElement('p');
+              description.textContent = repo.description || '';
+
+              const commitCount = document.createElement('p');
+              commitCount.textContent = `Commits: ${repo.commitCount}`;
+
+              const image = document.createElement('img');
+              // Use repo image if available, otherwise use default image
+              image.src = repo.description ? `${repo.description}.png` : 'default-image.png';
+              image.alt = 'Repository Image';
+
+              cardInfoTitle.appendChild(title);
+              cardInfoTitle.appendChild(description);
+              cardInfoTitle.appendChild(commitCount);
+
+              cardInfo.appendChild(cardInfoTitle);
+              cardInfoWrapper.appendChild(image);
+              cardInfoWrapper.appendChild(cardInfo);
+
+              cardContent.appendChild(cardInfoWrapper);
+
+              card.appendChild(cardContent);
+
+              projectsContainer.appendChild(card);
+            });
+          })
+          .catch(error => console.error('Error fetching GitHub repositories:', error));
+</script>
 </body>
-
 </html>
