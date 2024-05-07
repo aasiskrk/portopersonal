@@ -57,6 +57,7 @@ body {
 }
 
 .card {
+    filter: brightness(1.7);
     opacity: 75%;
     gap: 10px;
     background-color: rgba(255, 255, 255, 0.1);
