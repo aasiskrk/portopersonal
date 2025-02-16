@@ -3,112 +3,251 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Introduction</title>
+  <title>Projects - Aashista Karki</title>
   <link rel="stylesheet" type="text/css" href="projects.css" />
   <link rel="shortcut icon" type="image/x-icon" href="images/kkkl.png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 <div class="text">~_~ &nbsp;&nbsp;AASHISTA KARKI</div>
 <div><img id="black-cat" src="images/projects.png"></div>
+
+<div id="github-profile" class="github-profile">
+  <!-- Profile information will be loaded here -->
+</div>
+
+<div class="loading" id="loading">
+  <div class="spinner"></div>
+  <p>Loading projects...</p>
+</div>
 
 <div class="container" id="projects-container">
   <!-- Projects will be dynamically added here -->
 </div>
 
 <script>
-  // Function to fetch repository commit count
-  async function fetchCommitCount(repoName) {
-    const query = `
-      query {
-        repository(owner: "aasiskrk", name: "${repoName}") {
-          ref(qualifiedName: "master") {
-            target {
-              ... on Commit {
-                history {
-                  totalCount
-                }
-              }
-            }
-          }
-        }
-      }
-    `;
-    const response = await fetch('https://api.github.com/graphql', {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer Token',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ query }),
-    });
-    const data = await response.json();
-    return data.data.repository.ref.target.history.totalCount;
+  const loading = document.getElementById('loading');
+  const projectsContainer = document.getElementById('projects-container');
+  const profileContainer = document.getElementById('github-profile');
+
+  // Fetch GitHub profile
+  async function fetchGitHubProfile() {
+    try {
+      const response = await fetch('https://api.github.com/users/aasiskrk');
+      const profile = await response.json();
+      
+      profileContainer.innerHTML = `
+        <div class="profile-card">
+          <img src="${profile.avatar_url}" alt="Profile Picture" class="profile-image">
+          <div class="profile-info">
+            <h2>${profile.name || profile.login}</h2>
+            <p>${profile.bio || ''}</p>
+            <div class="profile-stats">
+              <span><i class="fas fa-users"></i> ${profile.followers} followers</span>
+              <span><i class="fas fa-user-friends"></i> ${profile.following} following</span>
+              <span><i class="fas fa-code-branch"></i> ${profile.public_repos} repos</span>
+            </div>
+            <a href="${profile.html_url}" target="_blank" class="github-link">
+              <i class="fab fa-github"></i> View Profile
+            </a>
+          </div>
+        </div>
+      `;
+    } catch (error) {
+      console.error('Error fetching GitHub profile:', error);
+      profileContainer.innerHTML = '<p class="error">Error loading profile information</p>';
+    }
   }
 
-  // Fetch GitHub repositories using GitHub API
-  fetch('https://api.github.com/users/aasiskrk/repos')
-          .then(response => response.json())
-          .then(async repos => {
-            // Fetch commit counts for each repository
-            const reposWithCommits = await Promise.all(repos.map(async repo => {
-              const commitCount = await fetchCommitCount(repo.name);
-              return { ...repo, commitCount };
-            }));
+  // Function to fetch repository languages
+  async function fetchRepoLanguages(repoName) {
+    try {
+      const response = await fetch(`https://api.github.com/repos/aasiskrk/${repoName}/languages`);
+      return await response.json();
+    } catch (error) {
+      console.error(`Error fetching languages for ${repoName}:`, error);
+      return {};
+    }
+  }
 
-            // Sort repos by commit count (descending)
-            reposWithCommits.sort((a, b) => b.commitCount - a.commitCount);
+  // Fetch GitHub repositories
+  async function fetchRepositories() {
+    try {
+      loading.style.display = 'flex';
+      const response = await fetch('https://api.github.com/users/aasiskrk/repos?sort=updated&per_page=100');
+      const repos = await response.json();
 
-            const projectsContainer = document.getElementById('projects-container');
+      // Fetch languages for each repo
+      const reposWithLanguages = await Promise.all(repos.map(async repo => {
+        const languages = await fetchRepoLanguages(repo.name);
+        return { ...repo, languages };
+      }));
 
-            reposWithCommits.forEach(repo => {
-              const card = document.createElement('div');
-              card.classList.add('card');
-              card.addEventListener('click', () => {
-                window.location.href = repo.html_url;
-              });
+      // Sort repos by stars and update date
+      reposWithLanguages.sort((a, b) => {
+        if (b.stargazers_count === a.stargazers_count) {
+          return new Date(b.updated_at) - new Date(a.updated_at);
+        }
+        return b.stargazers_count - a.stargazers_count;
+      });
 
-              const cardContent = document.createElement('div');
-              cardContent.classList.add('card-content');
+      projectsContainer.innerHTML = ''; // Clear container
 
-              const cardInfoWrapper = document.createElement('div');
-              cardInfoWrapper.classList.add('card-info-wrapper');
+      reposWithLanguages.forEach(repo => {
+        // Create language badges HTML
+        const languagesList = Object.keys(repo.languages)
+          .map(lang => `<span class="language-badge">${lang}</span>`)
+          .join('');
 
-              const cardInfo = document.createElement('div');
-              cardInfo.classList.add('card-info');
+        const card = document.createElement('div');
+        card.classList.add('card');
+        card.innerHTML = `
+          <div class="card-content">
+            <div class="card-info-wrapper">
+              <div class="card-info">
+                <div class="card-info-title">
+                  <h3>${repo.name}</h3>
+                  <p>${repo.description || 'No description available'}</p>
+                  <div class="repo-stats">
+                    <span><i class="fas fa-star"></i> ${repo.stargazers_count}</span>
+                    <span><i class="fas fa-code-branch"></i> ${repo.forks_count}</span>
+                    <span><i class="fas fa-eye"></i> ${repo.watchers_count}</span>
+                  </div>
+                  <div class="languages-container">
+                    ${languagesList}
+                  </div>
+                  <p class="updated-at">Last updated: ${new Date(repo.updated_at).toLocaleDateString()}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
 
-              const cardInfoTitle = document.createElement('div');
-              cardInfoTitle.classList.add('card-info-title');
+        card.addEventListener('click', () => {
+          window.open(repo.html_url, '_blank');
+        });
 
-              const title = document.createElement('h3');
-              title.textContent = repo.name;
+        projectsContainer.appendChild(card);
+      });
+    } catch (error) {
+      console.error('Error fetching GitHub repositories:', error);
+      projectsContainer.innerHTML = '<p class="error">Error loading projects. Please try again later.</p>';
+    } finally {
+      loading.style.display = 'none';
+    }
+  }
 
-              const description = document.createElement('p');
-              description.textContent = repo.description || '';
-
-              const commitCount = document.createElement('p');
-              commitCount.textContent = `Commits: ${repo.commitCount}`;
-
-              const image = document.createElement('img');
-              // Use repo image if available, otherwise use default image
-              image.src = repo.description ? `${repo.description}.png` : 'default-image.png';
-              image.alt = 'Repository Image';
-
-              cardInfoTitle.appendChild(title);
-              cardInfoTitle.appendChild(description);
-              cardInfoTitle.appendChild(commitCount);
-
-              cardInfo.appendChild(cardInfoTitle);
-              cardInfoWrapper.appendChild(image);
-              cardInfoWrapper.appendChild(cardInfo);
-
-              cardContent.appendChild(cardInfoWrapper);
-
-              card.appendChild(cardContent);
-
-              projectsContainer.appendChild(card);
-            });
-          })
-          .catch(error => console.error('Error fetching GitHub repositories:', error));
+  // Initialize
+  fetchGitHubProfile();
+  fetchRepositories();
 </script>
+
+<style>
+  .github-profile {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+  }
+
+  .profile-card {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+  }
+
+  .profile-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-right: 20px;
+  }
+
+  .profile-info {
+    flex: 1;
+  }
+
+  .profile-stats {
+    display: flex;
+    gap: 20px;
+    margin: 10px 0;
+  }
+
+  .profile-stats span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .github-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 16px;
+    background: #2ea44f;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    margin-top: 10px;
+  }
+
+  .loading {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+  }
+
+  .spinner {
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-left-color: #7983ff;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .language-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    margin: 2px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    font-size: 0.8em;
+  }
+
+  .repo-stats {
+    display: flex;
+    gap: 15px;
+    margin: 10px 0;
+  }
+
+  .repo-stats span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .updated-at {
+    font-size: 0.8em;
+    color: #888;
+    margin-top: 10px;
+  }
+
+  .error {
+    color: #ff6b6b;
+    text-align: center;
+    padding: 20px;
+  }
+</style>
 </body>
 </html>
